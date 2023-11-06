@@ -89,7 +89,7 @@ public class GOrderBookImpl implements IOrderBook {
             return tVolume;
         }
 
-        List<Long> emptyBuckets = Lists.newArrayList()
+        List<Long> emptyBuckets = Lists.newArrayList();
         for(IOrderBucket bucket : matchingBuckets.values()){
             tVolume += bucket.match(cmd.volume - tVolume,cmd,order ->{
                 oidMap.remove(order.getOid());

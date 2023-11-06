@@ -11,10 +11,14 @@ import com.alipay.sofa.jraft.rhea.options.configured.PlacementDriverOptionsConfi
 import com.alipay.sofa.jraft.rhea.options.configured.RheaKVStoreOptionsConfigured;
 import com.ethan.Handler.risk.BaseHandler;
 import com.ethan.Handler.risk.ExistingRiskHandler;
+import com.ethan.Handler.risk.match.MatchHandler;
+import com.ethan.bean.orderbook.GOrderBookImpl;
+import com.ethan.bean.orderbook.IOrderBook;
 import com.ethan.db.DbQuery;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import core.EngineApi;
 import io.netty.handler.codec.CodecException;
+import io.netty.util.collection.IntObjectHashMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.datagram.DatagramSocket;
@@ -85,6 +89,12 @@ public class EngineConfig {
                 db.queryAllStockCode()
         );
         //2.撮合处理器 (order book) 撮合/提供行情查询
+        HashMap<String,IOrderBook> orderBookMap = new HashMap<>();
+        db.queryAllStockCode().forEach((code) -> {
+            orderBookMap.put(code, new GOrderBookImpl(code));
+        });
+
+        final BaseHandler matchHandler = new MatchHandler(orderBookMap);
 
 
         //3.发布处理器
