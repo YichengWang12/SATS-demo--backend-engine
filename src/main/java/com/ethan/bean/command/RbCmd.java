@@ -23,7 +23,7 @@ public class RbCmd {
 
     public CmdType command;
 
-    public int code;
+    public String code;
 
     public OrderDirection direction;
 
