@@ -25,6 +25,27 @@ public class DbQuery {
     @NonNull
     private QueryRunner runner;
 
+    /**
+     * 查询会员ID
+     *
+     * @return
+     * @throws Exception
+     */
+    public short[] queryAllMemberIds() throws Exception {
+        List<Map<String, Object>> listmap = runner.query("select id from t_member where status=1", new MapListHandler());
+        if (CollectionUtils.isEmpty(listmap)) {
+            throw new Exception("member empty");
+        }
+
+        short[] memberIds = new short[listmap.size()];
+        int i = 0;
+        for (Map<String, Object> map : listmap) {
+            memberIds[i] = Short.parseShort(map.get("id").toString());
+            i++;
+        }
+        return memberIds;
+    }
+
 
     /**
      * 查询资金
@@ -68,26 +89,7 @@ public class DbQuery {
         return codes;
     }
 
-    /**
-     * 查询会员ID
-     *
-     * @return
-     * @throws Exception
-     */
-    public short[] queryAllMemberIds() throws Exception {
-        List<Map<String, Object>> listmap = runner.query("select id from t_member where status=1", new MapListHandler());
-        if (CollectionUtils.isEmpty(listmap)) {
-            throw new Exception("member empty");
-        }
 
-        short[] memberIds = new short[listmap.size()];
-        int i = 0;
-        for (Map<String, Object> map : listmap) {
-            memberIds[i] = Short.parseShort(map.get("id").toString());
-            i++;
-        }
-        return memberIds;
-    }
 
 
 }

@@ -16,7 +16,7 @@ public interface IOrderBucket extends Comparable<IOrderBucket>{
 
     //4. 行情发布
     long getPrice();
-    long setPrice(long price);
+    void setPrice(long price);
     long getTotalVolume();
 
     AtomicLong tidGen = new AtomicLong(0);

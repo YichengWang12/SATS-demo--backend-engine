@@ -20,6 +20,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import core.EngineApi;
 //import io.netty.handler.codec.CodecException;
 //import io.netty.util.collection.IntObjectHashMap;
+import core.EngineCore;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.datagram.DatagramSocket;
@@ -119,6 +120,9 @@ public class EngineConfig {
         final BaseHandler pubHandler = new L1PubHandler(
                 matcherEventMap,this
         );
+
+        engineApi = new EngineCore(riskHandler,matchHandler,pubHandler).getApi();
+
     }
 
     /**
@@ -134,7 +138,7 @@ public class EngineConfig {
     }
 
     @Getter
-    private EngineApi engineApi = new EngineApi();
+    private EngineApi engineApi;
 
     @Getter
     @ToString.Exclude

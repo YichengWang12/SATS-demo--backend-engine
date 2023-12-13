@@ -54,6 +54,7 @@ public class L1PubHandler extends BaseHandler {
         if(matcherEventMap.size()==0){
             return;
         }
+        log.info(matcherEventMap);
         try {
             for(ShortObjectPair<List<MatchData>>s: matcherEventMap.keyValuesView()){
                 //s.one : mid
@@ -74,6 +75,7 @@ public class L1PubHandler extends BaseHandler {
     //需要表明 我往什么样的地址上发送 是五档行情
     public static final short HQ_ADDRESS = -1;
     private void pubMarketData(Map<String,L1MarketData> marketDataMap) {
+        log.info(marketDataMap);
         byte[] serialize = null;
         try{
             serialize = config.getByteCodec().seriallize(marketDataMap.values().toArray(new L1MarketData[0]));
