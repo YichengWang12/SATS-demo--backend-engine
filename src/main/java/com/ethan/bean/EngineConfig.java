@@ -10,6 +10,7 @@ import com.alipay.sofa.jraft.rhea.options.configured.MultiRegionRouteTableOption
 import com.alipay.sofa.jraft.rhea.options.configured.PlacementDriverOptionsConfigured;
 import com.alipay.sofa.jraft.rhea.options.configured.RheaKVStoreOptionsConfigured;
 import com.ethan.Handler.BaseHandler;
+import com.ethan.Handler.pub.L1PubHandler;
 import com.ethan.Handler.risk.ExistingRiskHandler;
 import com.ethan.Handler.match.MatchHandler;
 import com.ethan.bean.orderbook.GOrderBookImpl;
@@ -31,12 +32,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.dbutils.QueryRunner;
+import org.eclipse.collections.impl.map.mutable.primitive.ShortObjectHashMap;
 import thirdpart.bean.Cmdpack;
 import thirdpart.bus.IBusSender;
 import thirdpart.bus.MqttBusSender;
 import thirdpart.checksum.ICheckSum;
 import thirdpart.codec.IByteCodec;
 import thirdpart.codec.IMsgCodec;
+import thirdpart.hq.MatchData;
 
 import java.net.Inet4Address;
 import java.net.NetworkInterface;
@@ -109,6 +112,13 @@ public class EngineConfig {
 
 
         //3.发布处理器
+        ShortObjectHashMap<List<MatchData>> matcherEventMap = new ShortObjectHashMap<>();
+        for(short id: db.queryAllMemberIds()){
+            matcherEventMap.put(id, new ArrayList<>());
+        }
+        final BaseHandler pubHandler = new L1PubHandler(
+                matcherEventMap,this
+        );
     }
 
     /**

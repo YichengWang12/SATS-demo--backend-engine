@@ -4,7 +4,8 @@ import com.ethan.Handler.BaseHandler;
 import com.ethan.bean.EngineConfig;
 import com.ethan.bean.command.RbCmd;
 import com.ethan.bean.orderbook.MatchEvent;
-import io.netty.util.collection.IntObjectHashMap;
+//import io.netty.util.collection.IntObjectHashMap;
+import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.collections.impl.map.mutable.primitive.ShortObjectHashMap;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,9 @@ import thirdpart.hq.MatchData;
 import thirdpart.order.CmdType;
 
 import java.util.List;
+import java.util.Map;
 
-import static thirdpart.bean.MsgConstants.MATCH_HQ_DATA;
-import static thirdpart.bean.MsgConstants.NORMAL;
+import static thirdpart.bean.MsgConstants.*;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -57,13 +58,13 @@ public class L1PubHandler extends BaseHandler {
             for(ShortObjectPair<List<MatchData>>s: matcherEventMap.keyValuesView()){
                 //s.one : mid
                 //s.two : List<MatchData>
-                final List<MatchData> matchDataList = s.getTwo();
-                if(matchDataList.size() == 0){
+                if(CollectionUtils.isEmpty(s.getTwo())){
                     continue;
                 }
-                final byte[] serialize = config.getByteCodec().seriallize(matchDataList.toArray(new MatchData[0]));
-                pubData(serialize, s.getOne(), MATCH_HQ_DATA);
-                matchDataList.clear();
+                byte[] serialize = config.getByteCodec().seriallize(s.getTwo().toArray(new MatchData[0]));
+                pubData(serialize, s.getOne(), MATCH_ORDER_DATA);
+                //清空
+                s.getTwo().clear();
             }
         }catch (Exception e){
             log.error("serialize match data error: {}", e);
@@ -72,7 +73,7 @@ public class L1PubHandler extends BaseHandler {
 
     //需要表明 我往什么样的地址上发送 是五档行情
     public static final short HQ_ADDRESS = -1;
-    private void pubMarketData(IntObjectHashMap<L1MarketData> marketDataMap) {
+    private void pubMarketData(Map<String,L1MarketData> marketDataMap) {
         byte[] serialize = null;
         try{
             serialize = config.getByteCodec().seriallize(marketDataMap.values().toArray(new L1MarketData[0]));
