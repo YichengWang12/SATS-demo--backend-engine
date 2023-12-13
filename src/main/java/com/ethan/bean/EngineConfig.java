@@ -9,16 +9,16 @@ import com.alipay.sofa.jraft.rhea.options.RheaKVStoreOptions;
 import com.alipay.sofa.jraft.rhea.options.configured.MultiRegionRouteTableOptionsConfigured;
 import com.alipay.sofa.jraft.rhea.options.configured.PlacementDriverOptionsConfigured;
 import com.alipay.sofa.jraft.rhea.options.configured.RheaKVStoreOptionsConfigured;
-import com.ethan.Handler.risk.BaseHandler;
+import com.ethan.Handler.BaseHandler;
 import com.ethan.Handler.risk.ExistingRiskHandler;
-import com.ethan.Handler.risk.match.MatchHandler;
+import com.ethan.Handler.match.MatchHandler;
 import com.ethan.bean.orderbook.GOrderBookImpl;
 import com.ethan.bean.orderbook.IOrderBook;
 import com.ethan.db.DbQuery;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import core.EngineApi;
-import io.netty.handler.codec.CodecException;
-import io.netty.util.collection.IntObjectHashMap;
+//import io.netty.handler.codec.CodecException;
+//import io.netty.util.collection.IntObjectHashMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.datagram.DatagramSocket;
@@ -26,12 +26,14 @@ import io.vertx.core.datagram.DatagramSocketOptions;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import com.google.common.collect.Lists;
+//import com.google.common.collect.Lists;
 
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.dbutils.QueryRunner;
 import thirdpart.bean.Cmdpack;
+import thirdpart.bus.IBusSender;
+import thirdpart.bus.MqttBusSender;
 import thirdpart.checksum.ICheckSum;
 import thirdpart.codec.IByteCodec;
 import thirdpart.codec.IMsgCodec;
@@ -78,10 +80,19 @@ public class EngineConfig {
         //3. start engine
         startEngine();
         //4. initialize Pub connection
+        initPub();
         //5. initialize seq(KV store) connection
         initSeqConnection();
     }
+//////////////////////////////////
 
+    @Getter
+    private IBusSender busSender;
+    private void initPub() {
+        busSender = new MqttBusSender(pubIp,pubPort,msgCodec,vertx);
+        busSender.startup();
+    }
+//////////////////////////////////
     private void startEngine() throws Exception {
         //1.前置风控处理器
         final BaseHandler riskHandler = new ExistingRiskHandler(

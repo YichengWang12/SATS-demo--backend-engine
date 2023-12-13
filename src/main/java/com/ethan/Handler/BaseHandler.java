@@ -1,4 +1,4 @@
-package com.ethan.Handler.risk;
+package com.ethan.Handler;
 
 import com.ethan.bean.command.RbCmd;
 import com.lmax.disruptor.EventHandler;

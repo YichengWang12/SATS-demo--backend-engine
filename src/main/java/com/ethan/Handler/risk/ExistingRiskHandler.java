@@ -1,5 +1,6 @@
 package com.ethan.Handler.risk;
 
+import com.ethan.Handler.BaseHandler;
 import com.ethan.bean.command.CmdResultCode;
 import com.ethan.bean.command.RbCmd;
 import lombok.NonNull;
@@ -11,7 +12,7 @@ import thirdpart.order.CmdType;
 
 @Log4j2
 @RequiredArgsConstructor
-public class ExistingRiskHandler extends BaseHandler{
+public class ExistingRiskHandler extends BaseHandler {
 
     @NonNull
     private MutableLongSet uidSet;

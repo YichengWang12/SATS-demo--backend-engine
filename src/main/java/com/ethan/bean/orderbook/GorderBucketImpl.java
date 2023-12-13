@@ -15,11 +15,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+@Getter
 @ToString
 @Log4j2
 public class GorderBucketImpl implements IOrderBucket {
 
-    @Getter
     @Setter
     private long price;
 
